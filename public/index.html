@@ -7,17 +7,19 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/productos/guardar" method="post">
-        <label for="title">Titulo</label>
-        <input id="title" name="title" type="text">
+    <form style="display: flex; justify-content: center;" action="/productos/guardar" method="post">
+        <div style="display: flex; flex-direction: column; align-items: center;justify-content: center;width: 70%;">
+            <label for="title">Titulo</label>
+            <input style="width: 50%;" id="title" name="title" type="text">
     
-        <label for="price">Precio</label>
-        <input id="price" type="text">
+            <label for="price">Precio</label>
+            <input style="width: 50%;" name="price" id="price" type="text">
     
-        <label for="thumbnail">Imagen</label>
-        <input id="thumbnail" type="text">
+            <label for="thumbnail">URL imagen</label>
+            <input style="width: 50%;" name="thumbnail" id="thumbnail" type="text">
     
-        <input type="submit" value="enviar">
+            <input style="width: 50%; margin-top: 5px; cursor: pointer;" type="submit" value="enviar">
+        </div>
     </form>
 </body>
 </html>

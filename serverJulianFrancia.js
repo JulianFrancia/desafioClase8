@@ -28,7 +28,6 @@ app.get('/productos/listar/:id', (req,res) => {
 });
 
 app.post('/productos/guardar', (req,res) => {
-    console.log(req.body)
     productos.guardarUnProducto(req.body);
     res.json(req.body);
 })
