@@ -19,25 +19,25 @@ const server = app.listen(PORT, () => {
 server.on('error',error => console.log(`error en el server: ${error}`))
 
 
-app.get('/productos/listar', (req,res) => {
+router.get('/productos/listar', (req,res) => {
     res.json(productos.devolverLista());
 });
 
-app.get('/productos/listar/:id', (req,res) => {
+router.get('/productos/listar/:id', (req,res) => {
     res.json(productos.devolveUnProducto(req.params.id))
 });
 
-app.post('/productos/guardar', (req,res) => {
+router.post('/productos/guardar', (req,res) => {
     productos.guardarUnProducto(req.body);
     res.json(req.body);
 })
 
-app.put('/productos/actualizar/:id', async (req,res) => {
+router.put('/productos/actualizar/:id', async (req,res) => {
     await productos.editarUnProducto(req.params.id, req.body.title, req.body.price, req.body.thumbnail);
     res.json(productos.devolveUnProducto(req.params.id));
 })
 
-app.delete('/productos/borrar/:id', async (req,res) => {
+router.delete('/productos/borrar/:id', async (req,res) => {
     await res.json(productos.devolveUnProducto(req.params.id));
     productos.borrarUnProducto(req.params.id);
 })
