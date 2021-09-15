@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="index.js"></script>
 </head>
 <body>
-    <form style="display: flex; justify-content: center;" action="api/productos/guardar" method="post">
+    <form id="form" style="display: flex; justify-content: center;">
         <div style="display: flex; flex-direction: column; align-items: center;justify-content: center;width: 70%;">
             <h3>Agregar producto</h3>
             <label for="title">Titulo</label>
@@ -19,7 +20,7 @@
             <label for="thumbnail">URL imagen</label>
             <input style="width: 50%;" name="thumbnail" id="thumbnail" type="text">
     
-            <input style="width: 50%; margin-top: 5px; cursor: pointer;" type="submit" value="Agregar">
+            <input style="width: 50%; margin-top: 5px; cursor: pointer;" type="button" value="Agregar" onclick="enviarProducto()">
         </div>
     </form>
 </body>
