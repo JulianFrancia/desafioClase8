@@ -1,0 +1,24 @@
+html
+    head
+        title='Mi primer plantilla de PUG'
+        style
+            include style.css 
+    body
+        if listExist
+            div(
+                class='main-box'
+            )
+                div(
+                    class='info-box'
+                )
+                    p(style={width: '150px'}) titulo
+                    p(style={width: '70px'}) precio
+                    p imagen
+                div
+                    each val in listaProd
+                        div(class='info-box')
+                            p(style={width: '150px'}) !{val.title}
+                            p(stlye={width: '70px'}) !{val.price}
+                            img(stlye={width: '25px', heigth:'25px'} src=val.thumbnail)
+        else
+            h1 no hay productos

@@ -1,0 +1,9 @@
+.main-box {
+    display: grid;
+    grid-template-rows: 40px 1fr;
+    grid-template-columns: 1fr;
+    grid-gap: 5px
+}
+.info-box {
+    display: flex;
+}
