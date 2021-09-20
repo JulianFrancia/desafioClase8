@@ -1,0 +1,21 @@
+<%if (listExist) { %>
+    <div style="display: grid; grid-template-rows: 40px 1fr; grid-template-columns: 1fr; grid-gap: 5px">
+        <div style="display: flex;">
+            <p style="width: 150px;">titulo</p>
+            <p style="width: 70px;">precio</p>
+            <p>imagen</p>
+        </div>
+        <div>
+            <% listaProd.forEach(function(item) {%>
+            <div style="display: flex;">
+                <p style="width: 150px;"><%=item.title%></p>
+                <p style="width: 70px;"><%=item.price%></p>
+                <img style="width: 25px; height: 25px" src="<%= item.thumbnail%>" alt="">
+            </div>
+            <%});%>
+        </div>
+    </div>
+<%}%>
+<%if (listNotExist) {%>
+    <h1>No hay productos</h1>
+<%}%>

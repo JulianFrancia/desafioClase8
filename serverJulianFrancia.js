@@ -19,18 +19,7 @@ const server = app.listen(PORT, () => {
 
 server.on('error',error => console.log(`error en el server: ${error}`));
 
-app.engine(
-    "hbs",
-    handlebars({
-        extname: ".hbs",
-        defaultLayout: "index.hbs",
-        productosDir: __dirname + "/views/layouts",
-        partialsDir: __dirname + "/views/partials"
-    })
-);
-
-app.set('views', './views');
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 
 
 router.get('/productos/listar', (req,res) => {
@@ -43,7 +32,7 @@ router.get('/productos/listar/:id', (req,res) => {
 
 router.get('/productos/vista', (req, res) => {
     let listExist = productos.devolverLista().length > 0 ? true : false;
-    res.render('main',{listaProd: productos.devolverLista(), listExist: listExist, listNotExist: !listExist});
+    res.render('productos',{listaProd: productos.devolverLista(), listExist: listExist, listNotExist: !listExist})
 })
 
 router.post('/productos/guardar', (req,res) => {
