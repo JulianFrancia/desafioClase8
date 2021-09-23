@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('mostrarProductos', (data) => {
+            console.log(data)
+            render(data)
+        })
+
+        function enviarProducto() {
+            let form = document.getElementById('form');
+            let title = document.getElementById('title');
+            let precio = document.getElementById('price');
+            let img = document.getElementById('thumbnail');
+            let producto = {
+                title: title.value,
+                price: precio.value,
+                thumbnail: img.value
+            }
+            socket.emit('guardarProducto',producto);
+            form.reset()
+        }
+
+        function render(data) {
+            if(Array.isArray(data)){
+                let html = 
+            data.map(elem => {
+        return`
+            <div style="display: grid; grid-template-rows: 40px 1fr; grid-template-colums: 1fr; grid-gap: 5px">
+                <div style="display: flex;">
+                    <p style="width: 150px;">titulo</p>
+                    <p style="width: 70px;">precio</p>
+                    <p>imagen</p>
+                </div>
+                <div id="productos">
+                            <div style="display: flex;">
+                                <p style="width: 150px;">${elem.title}</p>
+                                <p style="width: 70px;">${elem.price}</p>
+                                <img style="width: 25px; heigth: 25px" src="${elem.thumbnail}" alt="">
+                            </div>
+                </div>
+            </div>
+                `
+            }).join(' ')
+            document.getElementById('productos').innerHTML = html;
+            } else {
+                document.getElementById('productos').innerHTML = "No hay productos cargados"
+            }
+        }
+    </script>
+</head>
+<body>
+    <form id="form" style="display: flex; justify-content: center;">
+        <div style="display: flex; flex-direction: column; align-items: center;justify-content: center;width: 70%;">
+            <h3>Agregar producto</h3>
+            <label for="title">Titulo</label>
+            <input style="width: 50%;" id="title" name="title" type="text">
+    
+            <label for="price">Precio</label>
+            <input style="width: 50%;" name="price" id="price" type="text">
+    
+            <label for="thumbnail">URL imagen</label>
+            <input style="width: 50%;" name="thumbnail" id="thumbnail" type="text">
+    
+            <input style="width: 50%; margin-top: 5px; cursor: pointer;" type="button" value="Agregar" onclick="enviarProducto()">
+        </div>
+    </form>
+    <div id="productos"></div>
+</body>
+</html>
