@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
     socket.emit('mostrarProductos', productos.devolverLista())
     socket.on('guardarProducto', data => {
         productos.guardarUnProducto(data);
-        socket.emit('mostrarProductos', productos.devolverLista())
+        io.sockets.emit('mostrarProductos', productos.devolverLista())
     });
 })
 
