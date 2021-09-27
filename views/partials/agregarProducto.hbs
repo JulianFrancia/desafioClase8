@@ -71,7 +71,7 @@
         function renderMensaje(mensajes) {
             let mensajesContainer = document.getElementById("mensajes");
             let html = mensajes.map(e => {
-                return `<strong><span style="color: blue">${e.mail}: </span></strong><span>${e.text}</span></br>`
+                return `<strong><span style="color: blue">${e.mail} </span><span style="color: brown">[${e.fecha}] :</span></strong><span>${e.text}</span></br>`
             }).join(' ');
             mensajesContainer.innerHTML = html;
         }

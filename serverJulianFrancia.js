@@ -1,23 +1,35 @@
-const express = require('express');
-const handlebars = require('express-handlebars');
-const Productos = require('./productos');
+import express from 'express';
+import Productos from './productos.js'
+import http from 'http';
+import { Server } from 'socket.io';
+import path from 'path';
+import * as handlebars from 'express-handlebars';
+import moment from 'moment';
+import fs from 'fs';
 
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const serverHttp = http.Server(app)
+const io = new Server(serverHttp);
 const PORT = 8080;
 const router = express.Router();
 const newRouter = express.Router();
 let listaProductos = []
 const productos = new Productos(listaProductos);
 let mensajes = [];
+const __dirname = path.resolve();
+let engine = handlebars.create({
+    extname: ".hbs",
+    defaultLayout: "index.hbs",
+    productosDir: __dirname + "/views/layouts",
+    partialsDir: __dirname + "/views/partials"
+}).engine;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use('/', newRouter);
 app.use('/api', router);
 
-const server = http.listen(PORT, () => {
+const server = serverHttp.listen(PORT, () => {
     console.log(`server escuchando en ${server.address().port}`)
 })
 
@@ -31,19 +43,16 @@ io.on('connection', (socket) => {
         io.sockets.emit('mostrarProductos', productos.devolverLista())
     });
     socket.on('enviar', data => {
+        data['fecha'] = moment().format('DD/MM/YYYY, h:mm:ss a');
         mensajes.push(data);
+        fs.writeFileSync('mensajes.txt', JSON.stringify(mensajes));
         io.sockets.emit('mostrarMensajes', mensajes);
     });
 })
 
 app.engine(
     "hbs",
-    handlebars({
-        extname: ".hbs",
-        defaultLayout: "index.hbs",
-        productosDir: __dirname + "/views/layouts",
-        partialsDir: __dirname + "/views/partials"
-    })
+    engine
 );
 
 app.set('views', './views');
