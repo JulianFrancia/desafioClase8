@@ -10,6 +10,7 @@ const router = express.Router();
 const newRouter = express.Router();
 let listaProductos = []
 const productos = new Productos(listaProductos);
+let mensajes = [];
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -23,10 +24,15 @@ const server = http.listen(PORT, () => {
 server.on('error',error => console.log(`error en el server: ${error}`));
 
 io.on('connection', (socket) => {
-    socket.emit('mostrarProductos', productos.devolverLista())
+    socket.emit('mostrarProductos', productos.devolverLista());
+    socket.emit('mostrarMensajes', mensajes)
     socket.on('guardarProducto', data => {
         productos.guardarUnProducto(data);
         io.sockets.emit('mostrarProductos', productos.devolverLista())
+    });
+    socket.on('enviar', data => {
+        mensajes.push(data);
+        io.sockets.emit('mostrarMensajes', mensajes);
     });
 })
 

@@ -11,6 +11,10 @@
 
         socket.on('mostrarProductos', (data) => {
             render(data)
+        });
+
+        socket.on('mostrarMensajes', data => {
+            renderMensaje(data);
         })
 
         function enviarProducto() {
@@ -53,6 +57,24 @@
                 document.getElementById('productos').innerHTML = "No hay productos cargados"
             }
         }
+
+        function enviarMensaje() {
+            let form = document.getElementById("formMensaje");;
+            let mail = document.getElementById("mail");
+            let mensaje = document.getElementById("mensaje");
+            if(mail.value !== '') {
+                let msg = {mail: mail.value, text: mensaje.value};
+                socket.emit('enviar', msg)
+            }
+        }
+
+        function renderMensaje(mensajes) {
+            let mensajesContainer = document.getElementById("mensajes");
+            let html = mensajes.map(e => {
+                return `<strong><span style="color: blue">${e.mail}: </span></strong><span>${e.text}</span></br>`
+            }).join(' ');
+            mensajesContainer.innerHTML = html;
+        }
     </script>
 </head>
 <body>
@@ -72,5 +94,14 @@
         </div>
     </form>
     <div id="productos"></div>
+    <div>
+        <h1>Mensajes</h1>
+        <form id="formMensaje">
+            <input id="mail" type="email">
+            <div id="mensajes"></div>
+            <input type="text" name="" id="mensaje">
+            <input type="button" value="Enviar" onclick="enviarMensaje()">
+        </form>
+    </div>
 </body>
 </html>
