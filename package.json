@@ -1,23 +1,33 @@
 {
   "name": "desafio",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "serverJulianFrancia.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ServerES6toJS5": "node_modules/.bin/babel serverJulianFrancia.es6.js -o server.js",
+    "ServerTStoJS5": "node_modules/.bin/babel server.ts -o server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.26.0",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "moment": "^2.29.1",
     "multer": "^1.4.3",
-    "socket.io": "^4.2.0"
+    "socket.io": "^4.2.0",
+    "typescript": "^4.4.3"
   },
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=6.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.2.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
   }
 }

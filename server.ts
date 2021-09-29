@@ -1,35 +1,27 @@
-import express from 'express';
-import Productos from './productos.js'
-import http from 'http';
-import { Server } from 'socket.io';
-import path from 'path';
-import * as handlebars from 'express-handlebars';
-import moment from 'moment';
-import fs from 'fs';
+const express = require('express');
+const handlebars = require('express-handlebars');
+const Productos = require('./productos');
+const moment = require('moment');
+const fs = require('fs');
 
 const app = express();
-const serverHttp = http.Server(app)
-const io = new Server(serverHttp);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 const PORT = 8080;
 const router = express.Router();
 const newRouter = express.Router();
+
 let listaProductos = []
 const productos = new Productos(listaProductos);
 let mensajes = [];
-const __dirname = path.resolve();
-let engine = handlebars.create({
-    extname: ".hbs",
-    defaultLayout: "index.hbs",
-    productosDir: __dirname + "/views/layouts",
-    partialsDir: __dirname + "/views/partials"
-}).engine;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use('/', newRouter);
 app.use('/api', router);
 
-const server = serverHttp.listen(PORT, () => {
+const server = http.listen(PORT, () => {
     console.log(`server escuchando en ${server.address().port}`)
 })
 
@@ -52,7 +44,12 @@ io.on('connection', (socket) => {
 
 app.engine(
     "hbs",
-    engine
+    handlebars({
+        extname: ".hbs",
+        defaultLayout: "index.hbs",
+        productosDir: __dirname + "/views/layouts",
+        partialsDir: __dirname + "/views/partials"
+    })
 );
 
 app.set('views', './views');
