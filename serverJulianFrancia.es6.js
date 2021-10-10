@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars');
 const Productos = require('./productos');
 const moment = require('moment');
 const fs = require('fs');
+const sqlite3 = require('./sqlite3/sqlite3Methods');
 
 const app = express();
 const http = require('http').Server(app);
@@ -14,12 +15,14 @@ const newRouter = express.Router();
 
 let listaProductos = []
 const productos = new Productos(listaProductos);
+const sqliteController = new sqlite3();
 let mensajes = [];
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use('/', newRouter);
 app.use('/api', router);
+sqliteController.createTable();
 
 const server = http.listen(PORT, () => {
     console.log(`server escuchando en ${server.address().port}`)
@@ -27,18 +30,22 @@ const server = http.listen(PORT, () => {
 
 server.on('error',error => console.log(`error en el server: ${error}`));
 
-io.on('connection', (socket) => {
-    socket.emit('mostrarProductos', productos.devolverLista());
+io.on('connection', async (socket) => {
+    listaProductos = []
+    await productos.devolverLista().then(prod => {listaProductos = prod})
+    socket.emit('mostrarProductos', listaProductos);
     socket.emit('mostrarMensajes', mensajes)
     socket.on('guardarProducto', data => {
         productos.guardarUnProducto(data);
         io.sockets.emit('mostrarProductos', productos.devolverLista())
     });
-    socket.on('enviar', data => {
+    socket.on('enviar', async data => {
         data['fecha'] = moment().format('DD/MM/YYYY, h:mm:ss a');
+        mensajes = [];
         mensajes.push(data);
-        fs.writeFileSync('mensajes.txt', JSON.stringify(mensajes));
-        io.sockets.emit('mostrarMensajes', mensajes);
+        await sqliteController.insertarFila(mensajes);
+        await sqliteController.select().then(m => io.sockets.emit('mostrarMensajes', m))
+        ;
     });
 })
 

@@ -1,29 +1,38 @@
+const mySql = require('./sqlite3/mysqlMethods');
+const mysqlController = new mySql();
+
 class Productos {
 
     constructor(listaProductos) {
         this.listaProductos = listaProductos;
+        mysqlController.createTable();
     }
 
-    devolverLista() {
-        return this.listaProductos.length !== 0 ? this.listaProductos : {error: 'no hay productos cargados'}
+    async devolverLista() {
+        let productosDevueltos;
+        await mysqlController.select().then(productos => {productosDevueltos = productos});
+        return productosDevueltos;
     }
 
-    devolveUnProducto(id) {
-        return this.listaProductos.find(e => e.id == id) ? this.listaProductos.find(e => e.id == id) : {error: 'producto no encontrado'}
+    async devolveUnProducto(id) {
+        let producto;
+        await mysqlController.selectWhere(id).then(prod => {producto = prod});
+        return producto;
     }
 
     guardarUnProducto(producto) {
         producto["id"] = this.listaProductos.length + 1;
+        this.listaProductos = [];
         this.listaProductos.push(producto);
+        mysqlController.insertarFila(this.listaProductos)
     }
 
     editarUnProducto(id,title, price, thumbnail) {
-        let pos = this.listaProductos.indexOf(this.devolveUnProducto(id));
-        pos != -1 ? this.listaProductos[pos] = {title,price,thumbnail,id} : null;
+        mysqlController.actualizar(id,title, price, thumbnail);
     }
 
     borrarUnProducto(id) {
-        this.listaProductos.splice(this.listaProductos.indexOf(this.devolveUnProducto(id)),1)
+        mysqlController.borrar(id);
     }
 }
 
