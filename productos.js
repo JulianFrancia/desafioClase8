@@ -1,3 +1,7 @@
+const { isConstructorDeclaration } = require('typescript');
+const productosModel = require('./models/producto-model');
+
+
 class Productos {
 
     constructor(listaProductos) {
@@ -5,25 +9,39 @@ class Productos {
     }
 
     devolverLista() {
-        return this.listaProductos.length !== 0 ? this.listaProductos : {error: 'no hay productos cargados'}
+        return productosModel.Producto.find().then(prods => {
+            if(prods.length == 0) {
+                return {error: 'no hay productos cargados'}
+            } else {
+                return prods
+            }
+        })
     }
 
     devolveUnProducto(id) {
-        return this.listaProductos.find(e => e.id == id) ? this.listaProductos.find(e => e.id == id) : {error: 'producto no encontrado'}
+        return productosModel.Producto.find({_id: id}).then(prod => {
+            if(prods.length == 0) {
+                return {error: 'producto no encontrado'}
+            } else {
+                return prod
+            }
+        })
     }
 
     guardarUnProducto(producto) {
-        producto["id"] = this.listaProductos.length + 1;
-        this.listaProductos.push(producto);
+        const productoNuevo = {price: producto.price, thumbnail: producto.thumbnail , title:producto.title};
+        const productoSaveModel = new productosModel.Producto(productoNuevo);
+        productoSaveModel.save();
     }
 
     editarUnProducto(id,title, price, thumbnail) {
-        let pos = this.listaProductos.indexOf(this.devolveUnProducto(id));
-        pos != -1 ? this.listaProductos[pos] = {title,price,thumbnail,id} : null;
+        productosModel.Producto.updateOne({_id:id} , {
+            $set: {title: title,price : price,thumbnail: thumbnail}
+        });
     }
 
     borrarUnProducto(id) {
-        this.listaProductos.splice(this.listaProductos.indexOf(this.devolveUnProducto(id)),1)
+        productosModel.Producto.deleteOne({_id:id});
     }
 }
 
