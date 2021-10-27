@@ -75,6 +75,10 @@ app.set('views', './views');
 app.set('view engine', 'hbs');
 
 
+router.get('/productos/vista-test', (req,res) => {
+    res.json(productos.devolverMock(req.query.cant))
+})
+
 router.get('/productos/listar', (req,res) => {
     productos.devolverLista().then( prods => res.json(prods));
 });
