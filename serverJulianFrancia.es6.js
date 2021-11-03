@@ -5,6 +5,7 @@ const moment = require('moment');
 const fs = require('fs');
 const mongoose = require('mongoose');
 const mensajesModel = require('./models/mensajes-model');
+const {normalize, schema} = require('normalizr');
 
 
 const app = express();
@@ -54,7 +55,9 @@ io.on('connection', (socket) => {
         data['fecha'] = moment().format('DD/MM/YYYY, h:mm:ss a');
         mensajes.push(data);
         const mensajeNuevo = {email: data.mail, text: data.text};
-        const mensajeSaveModel = new mensajesModel.Mensaje(mensajeNuevo);
+        const mensajeSchema = new schema.Entity('mensaje');
+        const normalizeMensaje = normalize(mensajeNuevo,mensajeSchema);
+        const mensajeSaveModel = new mensajesModel.Mensaje(normalizeMensaje);
         mensajeSaveModel.save();
         fs.writeFileSync('mensajes.txt', JSON.stringify(mensajes));
         io.sockets.emit('mostrarMensajes', mensajes);
@@ -75,7 +78,7 @@ app.set('views', './views');
 app.set('view engine', 'hbs');
 
 
-router.get('/productos/vista-test', (req,res) => {
+router.get('/productos/vista-test/:id', (req,res) => {
     res.json(productos.devolverMock(req.query.cant))
 })
 
