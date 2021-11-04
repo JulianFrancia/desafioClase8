@@ -6,6 +6,7 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const mensajesModel = require('./models/mensajes-model');
 const {normalize, schema} = require('normalizr');
+const session =  require('express-session');
 
 
 const app = express();
@@ -24,6 +25,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use('/', newRouter);
 app.use('/api', router);
+app.use(session({
+    secret:'secreto',
+    resave: true,
+    saveUninitialized: true
+}))
 
 const server = http.listen(PORT, () => {
     console.log(`server escuchando en ${server.address().port}`)
@@ -62,6 +68,9 @@ io.on('connection', (socket) => {
         fs.writeFileSync('mensajes.txt', JSON.stringify(mensajes));
         io.sockets.emit('mostrarMensajes', mensajes);
     });
+    socket.on('login', data => {
+        console.log(data)
+    })
 })
 
 app.engine(
@@ -114,4 +123,28 @@ router.delete('/productos/borrar/:id', async (req,res) => {
         res.json(prod)
     })
     productos.borrarUnProducto(req.params.id);
+})
+
+app.get('/login', (req,res) => {
+    if(req.query.usuario) {
+        req.session.admin = true;
+        req.session.usuario = req.query.usuario; 
+        res.send('login exitoso')
+    } else {
+        res.send('fallo el login')
+    }
+})
+
+app.get('/isLogged', (req,res) => {
+    if(req.session.admin) {
+        res.send({usuario: req.session.usuario, isLogged: true})
+    } else {
+        res.send({isLogged: false})
+    }
+})
+
+app.get('/logout', (req,res) => {
+    req.session.destroy();
+    res.send('logout')
+    console.log('deslogueado')
 })
