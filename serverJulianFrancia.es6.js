@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const mensajesModel = require('./models/mensajes-model');
 const {normalize, schema} = require('normalizr');
 const session =  require('express-session');
+const { max } = require('moment');
 
 
 const app = express();
@@ -28,7 +29,8 @@ app.use('/api', router);
 app.use(session({
     secret:'secreto',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {maxAge:60000}
 }))
 
 const server = http.listen(PORT, () => {
