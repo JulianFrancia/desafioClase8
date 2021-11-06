@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "babel-cli": "^6.26.0",
+    "connect-mongo": "^4.6.0",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",

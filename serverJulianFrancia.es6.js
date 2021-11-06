@@ -7,7 +7,8 @@ const mongoose = require('mongoose');
 const mensajesModel = require('./models/mensajes-model');
 const {normalize, schema} = require('normalizr');
 const session =  require('express-session');
-const { max } = require('moment');
+const mongoStore = require('connect-mongo');
+const advanceOptions =  {useNewUrlParser: true, useUnifiedTopology: true}
 
 
 const app = express();
@@ -27,10 +28,15 @@ app.use(express.urlencoded({extended: true}));
 app.use('/', newRouter);
 app.use('/api', router);
 app.use(session({
+    store: mongoStore.create({
+        mongoUrl: 'mongodb+srv://desafioCoder:admin@cluster0.bq275.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+        mongoOptions: advanceOptions,
+        ttl:600000,
+        autoRemove: 'native'
+    }),
     secret:'secreto',
     resave: true,
-    saveUninitialized: true,
-    cookie: {maxAge:60000}
+    saveUninitialized: true
 }))
 
 const server = http.listen(PORT, () => {
