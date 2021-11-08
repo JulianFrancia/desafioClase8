@@ -130,7 +130,7 @@ router.delete('/productos/borrar/:id', async (req,res) => {
 app.get('/login', (req,res) => {
     if(req.query.usuario) {
         req.session.admin = true;
-        req.session.usuario = req.query.usuario; 
+        req.session.usuario = req.query.usuario;
         res.send('login exitoso')
     } else {
         res.send('fallo el login')
@@ -147,6 +147,5 @@ app.get('/isLogged', (req,res) => {
 
 app.get('/logout', (req,res) => {
     req.session.destroy();
-    res.send('logout')
-    console.log('deslogueado')
+    res.redirect('/')
 })
